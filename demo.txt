@@ -1,0 +1,37 @@
+This document explains how to validate a certificate’s purpose before you upload the certificate to a keystore or a truststore. The process relies on OpenSSL for validation and is applicable on any environment where OpenSSL is available.
+
+The TLS certificates are generally issued with one or more purposes for which they can be used. Typically this is done to restrict the number of operations for which a public key contained in the certificate can be used. The purpose of the certificate is available in the following certificate extensions:
+
+Key usage
+Extended key usage
+Key usage
+The key usage extension defines the purpose (for example, encipherment, signature, or certificate signing) of the key contained in the certificate. If the public key is used for entity authentication, then the certificate extension should have the key usage Digital signature.
+
+The different key usage extensions available for a TLS certificate created using the Certificate Authority (CA) process are as follows:
+
+Digital signature
+Non-repudiation
+Key encipherment
+Data encipherment
+Key agreement
+Certificate signing
+CRL signing
+Encipher only
+Decipher only
+For more information on these key usage extensions, see RFC5280, Key Usage.
+
+Extended key usage
+This extension indicates one or more purposes for which the certified public key may be used, in addition to or in place of the basic purposes indicated in the key usage extension. In general, this extension will appear only in end entity certificates.
+
+Some common extended key usage extensions are as follows:
+
+TLS Web server authentication
+TLS Web client authentication
+anyExtendedKeyUsage
+An extended key can be either critical or non-critical.
+
+If the extension is critical, the certificate must be used only for the indicated purpose or purposes. If the certificate is used for another purpose, it is in violation of the CA's policy.
+If the extension is non-critical, it indicates the intended purpose or purposes of the key is informational and does not imply that the CA restricts use of the key to the purpose indicated. However, applications that use certificates may require that a particular purpose be indicated in order for the certificate to be acceptable.
+If a certificate contains both the key usage field and the extended key usage field as critical then both fields must be processed independently, and the certificate can be used only for a purpose that satisfies both key usage values. However, if there is no purpose that can satisfy both key usage values, then that certificate must not be used for any purpose.
+
+When you procure a certificate, ensure that it has the proper key usage defined to satisfy the requirements for client or server certificates without which the TLS handshake would fail.
